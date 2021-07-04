@@ -1,0 +1,60 @@
+<template>
+  <div class="doc-page">
+    <web src="{{loadUrl}}" @message="handleFromH5" id="web"></web>
+  </div>
+</template>
+
+<script>
+import router from "@system.router"
+export default {
+    private: {
+        componentName: 'web',
+        loadUrl: "http://192.168.31.118:8083?&from=fast_app",
+    },
+    // onInit: function () {
+    //     const device = require("@system.device")
+    //     const res = device.getInfo();
+    //     let local = res.language;  //system lauguage  
+    //     let region = res.region;  //system region
+    //     console.info('onInit :localole= ' + local + ", region=" + region);
+    //     // if (local === 'zh') {
+    //     //     if (region === "CN") {
+    //     //         this.loadUrl = "https://transit.navitime.com/zh-cn/";
+    //     //     } else if (region === "TW") {
+    //     //         this.loadUrl = "https://transit.navitime.com/zh-tw/";
+    //     //     }
+    //     // } else if (local === 'ja') {
+    //     //     this.loadUrl = "https://transit.navitime.com/ja/?from=huawei.quickapp";
+    //     // } else {
+    //     //     //Other languages can use the default language H5
+    //     //     this.loadUrl = "https://transit.navitime.com/en";
+    //     // }
+    // },
+    //  onHide() {
+    //   console.log('首页onHide触发:')
+    //     console.log('首页退出应用',this.$app)
+    //     // this.$app.exit(1)
+    //     this.$app.exit()
+    // },
+    handleFromH5(e) {
+        // router.clear()
+        this.$element('web').postMessage({message: "你好H5,我在快应用"})
+        console.log(e,'====');
+        this.$app.exit()
+        // router.back()
+    },
+    onDestroy() {
+        this.$app.exit()
+        console.info(`### onDestroy web ###`)
+    }
+}
+</script>
+
+<style>
+/* @import '../../../common/css/common.css'; */
+
+.item-container {
+  margin: 0 60px 50px 60px;
+  flex-direction: column;
+}
+</style>
