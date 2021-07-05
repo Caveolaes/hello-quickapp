@@ -66,3 +66,21 @@
 | `yarn gen `  | 新增「快应用」页面 | 助你高效生成页面，模版可自定义，推荐 ✓|
 | `yarn prettier`  | 一键美化代码(js/css/less/ux)  | 实在是团队开发好帮手，推荐 ✓ |
 | `yarn prettier-watch`  | 对变化代码文件格式、实时美化 | 极大提升代码编写效率，强烈推荐 ✔️|
+
+## H5交互
+```
+/**浅色主题css */
+@media (prefers-color-scheme: dark) {
+    .hot-lists {
+        flex-direction: column;
+        justify-content: center;
+        align-content: center;
+        align-items: center;
+    }
+
+    .hot-lists {
+        font-size: 100px;
+        color: #000000;
+    }
+}
+```
