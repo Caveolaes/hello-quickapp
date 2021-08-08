@@ -1,15 +1,52 @@
 <template>
   <div class="doc-page">
-    <web src="{{loadUrl}}" @message="handleFromH5" id="web"></web>
+    <web
+      src="{{loadUrl}}"
+      @message="handleFromH5"
+      id="web"
+      trustedurl="{{trustedurl}}"
+    ></web>
   </div>
 </template>
 
 <script>
+import configuration from '@system.configuration'
 import router from "@system.router"
+import webview from '@system.webview'
 export default {
     private: {
         componentName: 'web',
-        loadUrl: "http://192.168.31.118:8083?&from=fast_app",
+        loadUrl: "http://192.168.31.118:8081?&from=fast_app",
+        trustedurl: [/^http:\/\/192.168.31.118/]
+    },
+    onInit() {
+
+        // webview.loadUrl({
+        //     url: this.loadUrl,
+        //     allowthirdpartycookies: true
+        // })
+    },
+    onReady() {
+        const themeMode = configuration.getThemeMode()
+        console.log(themeMode, 'web---------');
+        // postMessage 传递的数据是字符串类型的
+        this.$element('web').postMessage({ message: themeMode + '' })
+    },
+    getTheme() {
+        const themeMode = configuration.getThemeMode()
+        console.log(`Theme mode is ${themeMode} now~`)
+    },
+    onConfigurationChanged(params) {
+        console.log(params, '========80');
+        const { type = '' } = params
+        if (type === 'themeMode') {
+            const themeMode = configuration.getThemeMode()
+            this.$element('web').postMessage({ message: themeMode + '' })
+            //  this.$element('web').postMessage({message: themeMode})
+            console.log(`themeMode has changed! And now theme mode is ${themeMode}.`)
+        } else {
+            console.log(`other type of config has changed, type is : ${type}.`)
+        }
     },
     // onInit: function () {
     //     const device = require("@system.device")
@@ -38,9 +75,9 @@ export default {
     // },
     handleFromH5(e) {
         // router.clear()
-        this.$element('web').postMessage({message: "你好H5,我在快应用"})
-        console.log(e,'====');
-        this.$app.exit()
+        // this.$element('web').postMessage({message: "你好H5,我在快应用"})
+        console.log(e, '====');
+        // this.$app.exit()
         // router.back()
     },
     onDestroy() {
