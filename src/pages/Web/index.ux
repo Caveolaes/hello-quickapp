@@ -3,6 +3,7 @@
     <web
       src="{{loadUrl}}"
       @message="handleFromH5"
+      forcedark="false"
       id="web"
       trustedurl="{{trustedurl}}"
     ></web>
@@ -16,7 +17,8 @@ import webview from '@system.webview'
 export default {
     private: {
         componentName: 'web',
-        loadUrl: "http://192.168.31.118:8081?&from=fast_app",
+        loadUrl: null,
+        darkmode: '',
         trustedurl: [/^http:\/\/192.168.31.118/]
     },
     onInit() {
@@ -27,52 +29,34 @@ export default {
         // })
     },
     onReady() {
-        const themeMode = configuration.getThemeMode()
-        console.log(themeMode, 'web---------');
-        // postMessage 传递的数据是字符串类型的
-        this.$element('web').postMessage({ message: themeMode + '' })
+        this.getTheme()
+        this.toLinkH5()
     },
     getTheme() {
         const themeMode = configuration.getThemeMode()
+        this.darkmode = themeMode
         console.log(`Theme mode is ${themeMode} now~`)
+        this.$element('web').postMessage({ message: JSON.stringify(themeMode) })
     },
     onConfigurationChanged(params) {
         console.log(params, '========80');
         const { type = '' } = params
         if (type === 'themeMode') {
-            const themeMode = configuration.getThemeMode()
-            this.$element('web').postMessage({ message: themeMode + '' })
-            //  this.$element('web').postMessage({message: themeMode})
-            console.log(`themeMode has changed! And now theme mode is ${themeMode}.`)
-        } else {
-            console.log(`other type of config has changed, type is : ${type}.`)
+            this.getTheme()
         }
     },
-    // onInit: function () {
-    //     const device = require("@system.device")
-    //     const res = device.getInfo();
-    //     let local = res.language;  //system lauguage  
-    //     let region = res.region;  //system region
-    //     console.info('onInit :localole= ' + local + ", region=" + region);
-    //     // if (local === 'zh') {
-    //     //     if (region === "CN") {
-    //     //         this.loadUrl = "https://transit.navitime.com/zh-cn/";
-    //     //     } else if (region === "TW") {
-    //     //         this.loadUrl = "https://transit.navitime.com/zh-tw/";
-    //     //     }
-    //     // } else if (local === 'ja') {
-    //     //     this.loadUrl = "https://transit.navitime.com/ja/?from=huawei.quickapp";
-    //     // } else {
-    //     //     //Other languages can use the default language H5
-    //     //     this.loadUrl = "https://transit.navitime.com/en";
-    //     // }
-    // },
+    onInit: function () {
+
+    },
     //  onHide() {
     //   console.log('首页onHide触发:')
     //     console.log('首页退出应用',this.$app)
     //     // this.$app.exit(1)
     //     this.$app.exit()
     // },
+    toLinkH5() {
+        this.loadUrl = `http://192.168.31.118:8083/?from=fast_app&darkmode=${this.darkmode}`
+    },
     handleFromH5(e) {
         // router.clear()
         // this.$element('web').postMessage({message: "你好H5,我在快应用"})
